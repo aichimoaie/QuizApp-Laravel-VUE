@@ -1,0 +1,59 @@
+version: '3.7'
+services:
+  frontend:
+    container_name: frontend
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - 80:80
+    volumes:
+      - './frontend:/app'
+    networks:
+      -  my-network
+
+  laravelappname:
+    container_name: laravelappname
+    build:
+      args:
+        user: alexandru
+        uid: 1000
+      context: ./laravelappname
+      dockerfile: Dockerfile
+    user: root
+
+    volumes:
+      - ./laravelappname:/app
+      # custom adjustments to php.ini
+      # i. e. "xdebug.remote_host" to debug the dockerized app
+      - ./etc/php:/usr/local/etc/php/local.conf.d/
+    environment:
+      # add our custom config files for the php to scan
+      PHP_INI_SCAN_DIR: "/usr/local/etc/php/conf.d/:/usr/local/etc/php/local.conf.d/"
+    command: "php artisan serve --host=0.0.0.0 --port=8080"
+    networks:
+      - my-network
+
+  db:
+    image: mysql:5.7.32
+    container_name: mysql
+    restart: unless-stopped
+    tty: true
+    ports:
+      - 3307:3306
+    environment:
+      MYSQL_DATABASE: quiz_app
+      MYSQL_USER: bogdan
+      MYSQL_PASSWORD: Password123!
+      MYSQL_ROOT_PASSWORD: Password123!
+      SERVICE_TAGS: dev
+      SERVICE_NAME: mysql
+    volumes:
+      - ./mysql/:/var/lib/mysql/
+#      - ./mysql/my.cnf:/etc/mysql/my.cnf
+    networks:
+      - my-network
+
+networks:
+  my-network:
+    driver: bridge

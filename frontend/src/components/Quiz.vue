@@ -25,7 +25,7 @@ export default {
 
   methods: {
     async fetchQuestion() {
-      this.axios.get('http://127.0.0.1:8000/api/getQuestion')
+      this.axios.get('http://localhost/api/api/getQuestion')
           .then(res => {
             this.question = res.data;
           }).catch(error => {
@@ -36,7 +36,7 @@ export default {
     submitResponse(questionId,responseId){
       let that = this;
       let postData = {questionId : questionId, responseId: responseId };
-      that.axios.post('http://127.0.0.1:8000/api/quizzes' ,postData ).then(function(){
+      that.axios.post('http://localhost/api/api/quizzes' ,postData ).then(function(){
          that.$router.push('/results');
       }).catch(error=>{
             console.log(error);

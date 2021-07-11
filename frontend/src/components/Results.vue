@@ -25,7 +25,7 @@ export default {
   methods: {
     async fetchData() {
 
-      this.axios.get('http://127.0.0.1:8000/api/quizzes')
+      this.axios.get('http://localhost/api/api/quizzes')
           .then(res=>{
             this.results= res.data;
             this.totalResults= this.results.reduce(function(tot, arr) {
